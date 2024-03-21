@@ -1,0 +1,57 @@
+Um dos usos para IA no universo jornalístico, é ler textos e identificar alguns tipos de padrão, isso pode fazer com que jornalistas economizem bastante tempo para saber como escrever as histórias e até mesmo a veracidade delas. Neste arquivo, tem um exemplo simples em Python que:
+
+1. Carrega o conjunto de dados '20 newsgroups'.
+2. Divida entre dados de treino e teste.
+3. Cria um pipeline que processa o texto com TF-IDF e depois aplica o classificador Naive Bayes.
+4. Treina o modelo com os dados de treino.
+5. Testa e avalia o modelo com os dados de teste, exibindo uma matriz de confusão e um relatório de classificação.
+6. Define uma função para prever a categoria de novos textos baseados no modelo treinado.
+
+from sklearn.datasets import fetch_20newsgroups
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.pipeline import make_pipeline
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix, classification_report
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Carregar o conjunto de dados de 20 grupos de notícias
+data = fetch_20newsgroups()
+
+# Dividir o conjunto de dados em treino e teste
+train_data = fetch_20newsgroups(subset='train', categories=data.target_names, remove=('headers', 'footers', 'quotes'))
+test_data = fetch_20newsgroups(subset='test', categories=data.target_names, remove=('headers', 'footers', 'quotes'))
+
+# Visualizar alguns dados de exemplo
+print(train_data.data[5])  # Imprime um exemplo de texto da categoria
+print(train_data.target_names[train_data.target[5]])  # Imprime a categoria do texto
+
+# Criar um pipeline que combina um TF-IDF vectorizer com um classificador Naive Bayes
+model = make_pipeline(TfidfVectorizer(), MultinomialNB())
+
+# Treinar o modelo
+model.fit(train_data.data, train_data.target)
+
+# Prever as categorias do conjunto de teste
+labels = model.predict(test_data.data)
+
+# Criar uma matriz de confusão
+mat = confusion_matrix(test_data.target, labels)
+
+# Desenhar a matriz de confusão
+sns.heatmap(mat.T, square=True, annot=True, fmt='d', cbar=False,
+            xticklabels=train_data.target_names, yticklabels=train_data.target_names)
+plt.xlabel('true label')
+plt.ylabel('predicted label')
+
+# Visualizar o relatório de classificação
+print(classification_report(test_data.target, labels, target_names=test_data.target_names))
+
+# Testar o classificador com um novo texto
+def predict_category(s, train=train_data, model=model):
+    pred = model.predict([s])
+    return train.target_names[pred[0]]
+
+print(predict_category('Sending a payload to the ISS'))
+print(predict_category('Discussing is the next gen CPUs'))
