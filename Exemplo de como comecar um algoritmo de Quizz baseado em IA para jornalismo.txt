@@ -1,0 +1,31 @@
+import random
+
+# Exemplo de uma lista de acontecimentos atuais
+acontecimentos_atuais = [
+    "A recente cúpula do clima da ONU estabeleceu novas metas de redução de emissões.",
+    "O rover Perseverance da NASA encontrou novas evidências de água em Marte.",
+    "A economia global está mostrando sinais de recuperação após a pandemia."
+]
+
+# Função para fazer uma pergunta sobre um acontecimento atual
+def fazer_pergunta():
+    acontecimento = random.choice(acontecimentos_atuais)
+    print(f"O que você pensa sobre o seguinte acontecimento atual? \n{acontecimento}")
+
+# Função para obter a interpretação do usuário
+def obter_interpretacao():
+    interpretacao = input("Digite sua interpretação: ")
+    print("Obrigado por compartilhar sua interpretação!")
+
+# Simulação de um algoritmo interativo baseado em IA
+def algoritmo_interativo():
+    while True:
+        fazer_pergunta()
+        obter_interpretacao()
+        
+        continuar = input("Deseja continuar? (sim/não): ")
+        if continuar.lower() != 'sim':
+            break
+
+# Executar o algoritmo
+algoritmo_interativo()
